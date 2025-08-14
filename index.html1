@@ -196,7 +196,6 @@
 		//변수를 사용한 경고창 표시
 		let userName = "김민지";
 		alert(userName + "님, 로그인에 성공했습니다.");
-	</script>
   </head>
   <body>
     <div class="main_page">
