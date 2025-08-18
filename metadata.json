@@ -1,1 +1,1 @@
-{"tfjsVersion":"1.7.4","tmVersion":"2.4.10","packageVersion":"0.8.4-alpha2","packageName":"@teachablemachine/image","timeStamp":"2025-08-14T06:46:04.008Z","userMetadata":{},"modelName":"tm-my-image-model","labels":["그냥사진","모자쓴 사진","모자쓰고 기타치는것","벗은사진","벗고 모자만 쓴사진"],"imageSize":224}
+{"tfjsVersion":"1.7.4","tmVersion":"2.4.10","packageVersion":"0.8.4-alpha2","packageName":"@teachablemachine/image","timeStamp":"2025-08-18T06:14:06.236Z","userMetadata":{},"modelName":"tm-my-image-model","labels":["Class 1","Class 2"],"imageSize":224}
