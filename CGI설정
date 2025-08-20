@@ -1,0 +1,22 @@
+
+     CGI 설정
+C프로그램 웹브라우저 실행 방법
+
+1. $ sudo a2enmod cgi
+
+2. $ sudo systemctl restart apache2
+
+3. $ vi /etc/apache2/sites-available/000-default.conf에 아래추가
+
+<Directory /usr/lib/cgi-bin>
+         Options +ExecCGI
+         AddHandler cgi-script .cgi
+</Directory>
+
+4. $ sudo systemctl restart apache2
+
+5. $ gcc -o /usr/lib/cgi-bin/파일명.cgi 파일명.c  (작성되어있던 파일명.c를 컴파일)
+
+6. $ sudo chmod +x /usr/lib/cgi-bin/파일명.cgi
+
+* 웹브라우저에서 실행    http://125.251.58.88:49494/cgi-bin/test.cgi
