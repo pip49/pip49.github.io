@@ -13,6 +13,20 @@ C프로그램 웹브라우저 실행 방법
          AddHandler cgi-script .cgi
 </Directory>
 
+   또는 
+
+	#CGI 실행디렉토리 설정
+        ScriptAlias /cgi-bin/ "/usr/lib/cgi-bin/"
+        <Directory /usr/lib/cgi-bin>
+         AllowOverride None
+         Options +ExecCGI
+         AddHandler cgi-script .cgi
+         Require all granted
+        </Directory>
+
+
+
+
 4. $ sudo systemctl restart apache2
 
 5. $ gcc -o /usr/lib/cgi-bin/파일명.cgi 파일명.c  (작성되어있던 파일명.c를 컴파일)

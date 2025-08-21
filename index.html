@@ -1,135 +1,228 @@
 
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title> Honesty 솔직하게 하자</title>
-	</head>
-	<body>
-		<h1 style="font-size:50px">오늘은 비오는 날이네..</h1>
-		<h1> 자바스크립트와</h1>
-<div>Teachable Machine Image Model</div>
-<button type="button" onclick="init()">Start</button>
-<div id="webcam-container"></div>
-<div id="label-container"></div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-<script type="text/javascript">
-    // More API functions here:
-    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>아날로그 사운드의 소울</title>
 
-    // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/22g0qqxUE/";
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
 
-    let model, webcam, labelContainer, maxPredictions;
-
-    // Load the image model and setup the webcam
-    async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
-
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(loop);
-
-        // append elements to the DOM
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
         }
-    }
-
-    async function loop() {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    // run the webcam image through the image model
-    async function predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
         }
-    }
-</script>
-
-		<h1> css </h1>
-
-<div>Teachable Machine Image Model</div>
-<button type="button" onclick="init()">Start</button>
-<div id="webcam-container"></div>
-<div id="label-container"></div>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
-<script type="text/javascript">
-    // More API functions here:
-    // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
-    // the link to your model provided by Teachable Machine export panel
-    const URL = "https://teachablemachine.withgoogle.com/models/unh0qtePf/";
-
-    let model, webcam, labelContainer, maxPredictions;
-
-    // Load the image model and setup the webcam
-    async function init() {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
-
-        // load the model and metadata
-        // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-        // or files from your local hard drive
-        // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-        model = await tmImage.load(modelURL, metadataURL);
-        maxPredictions = model.getTotalClasses();
-
-        // Convenience function to setup a webcam
-        const flip = true; // whether to flip the webcam
-        webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
-        await webcam.setup(); // request access to the webcam
-        await webcam.play();
-        window.requestAnimationFrame(loop);
-
-        // append elements to the DOM
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-        for (let i = 0; i < maxPredictions; i++) { // and class labels
-            labelContainer.appendChild(document.createElement("div"));
+        .header-image-main {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 4px solid #00796b;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
         }
-    }
-
-    async function loop() {
-        webcam.update(); // update the webcam frame
-        await predict();
-        window.requestAnimationFrame(loop);
-    }
-
-    // run the webcam image through the image model
-    async function predict() {
-        // predict can take in an image, video or canvas html element
-        const prediction = await model.predict(webcam.canvas);
-        for (let i = 0; i < maxPredictions; i++) {
-            const classPrediction =
-                prediction[i].className + ": " + prediction[i].probability.toFixed(2);
-            labelContainer.childNodes[i].innerHTML = classPrediction;
+        .header-image-main:hover {
+            transform: scale(1.05);
         }
-    }
-</script>
+        .header-image-sub {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 3px solid #e65100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        .header-image-sub:hover {
+            transform: scale(1.05);
+        }
+        .container {
+            max-width: 800px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #00796b;
+            font-weight: 700;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.1em;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+        .highlight {
+            color: #e65100;
+            font-weight: 700;
+        }
+        .list-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .list-item {
+            background-color: #fafafa;
+            padding: 15px;
+            border-radius: 8px;
+            width: 45%;
+            box-sizing: border-box;
+            border-left: 3px solid #00796b;
+            text-align: left;
+        }
+        .list-item h3 {
+            color: #333;
+            margin: 0 0 10px;
+            font-weight: 400;
+            font-size: 1.2em;
+        }
+        .list-item ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .list-item li {
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+        .banner-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .banner-container img {
+            max-width: 45%;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .banner-container img:hover {
+            transform: scale(1.03);
+        }
+        .footer-info {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .footer-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
 
+<body>
+    <audio id="audio1" src="/1.mp3" preload="auto"></audio>
+    <audio id="audio2" src="/2.mp3" preload="auto"></audio>
+    <audio id="audio3" src="/3.mp3" preload="auto"></audio>
 
-	</body>
+    <div class="header-section">
+        <img src="/4.jpg" alt="믹스 오디오" class="header-image-sub" onclick="playAudio('audio1')">
+        <img src="/5.jpg" alt="메인 오디오" class="header-image-main" onclick="playAudio('audio2')">
+        <img src="/6.jpg" alt="블루스 오디오" class="header-image-sub" onclick="playAudio('audio3')">
+    </div>
+
+    <div class="container">
+        <h1>아날로그 사운드의 소울, 앰프와 기타가 만나는 곳</h1>
+        <p>
+            진공관의 따뜻한 불빛처럼, 블루스 기타의 깊은 선율처럼, 아날로그 사운드를 향한 우리의 열정이 모여 하나의 앰프 회로를 완성하는 공간입니다. 여기는 단순히 회로도를 공유하고 연주 팁을 나누는 것을 넘어, 손끝에서 탄생하는 진정한 소리의 즐거움을 함께 만들어가는 커뮤니티입니다.
+        </p>
+        <p>
+            기술적인 탐구와 예술적인 연주가 만나는 이곳에서, 나만의 사운드 <span class="highlight">톤(Tone)</span>을 찾아가는 여정을 시작해 보세요. 궁금했던 회로의 원리부터, 소울 가득한 연주를 위한 <span class="highlight">블루스 스케일(Blues Scale)</span> 연습까지, 당신의 열정을 채워줄 모든 것을 함께 나눕니다.
+        </p>
+        <p>
+            모두가 앰프 빌더이자 기타리스트인 우리들의 아지트에서, 당신의 <span class="highlight">오디오 소울(Audio Soul)</span>을 깨워보세요.
+        </p>
+
+        <div class="list-container">
+            <div class="list-item">
+                <h3>주요 활동</h3>
+                <ul>
+                    <li>앰프 회로 제작 및 설계 토론</li>
+                    <li>DIY 오디오 프로젝트 공유</li>
+                    <li>블루스 기타 연주 팁 및 노하우</li>
+                    <li>장비 리뷰 및 추천</li>
+                </ul>
+            </div>
+            <div class="list-item">
+                <h3>누구를 위한 공간인가요?</h3>
+                <ul>
+                    <li>자신만의 앰프를 만들고 싶은 분</li>
+                    <li>블루스 기타 연주에 깊이 빠져있는 분</li>
+                    <li>아날로그 사운드를 사랑하는 분</li>
+                    <li>같은 취미를 가진 사람들과 소통하고 싶은 분</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="banner-container">
+        <a href="http://pip49.com"><img src="/1.jpg" alt="쇼핑"></a>
+        <a href="http://band49.com"><img src="/2.jpg" alt="게시판"></a>
+    </div>
+
+    <div class="footer-info">
+        <p>상호명: [사업자명]</p>
+        <p>대표자: [대표자명]</p>
+        <p>주소: [주소]</p>
+        <p>전화번호: [전화번호]</p>
+        <p>이메일: [이메일]</p>
+    </div>
+
+    <script>
+        var audio1 = document.getElementById('audio1');
+        var audio2 = document.getElementById('audio2');
+        var audio3 = document.getElementById('audio3');
+        var currentAudio = null;
+
+        function playAudio(audioId) {
+            var audio = document.getElementById(audioId);
+
+            // 다른 오디오가 재생 중이면 정지
+            if (currentAudio && currentAudio !== audio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            if (audio.paused) {
+                audio.play();
+                currentAudio = audio;
+            } else {
+                audio.pause();
+            }
+        }
+    </script>
+</body>
 </html>
