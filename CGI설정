@@ -34,3 +34,44 @@ C프로그램 웹브라우저 실행 방법
 6. $ sudo chmod +x /usr/lib/cgi-bin/파일명.cgi
 
 * 웹브라우저에서 실행    http://125.251.58.88:49494/cgi-bin/test.cgi
+
+
+---------------------------------------------------------------------
+
+
+    * 이미지,오디오,비디오파일등 저장장소는
+
+    /var/www/html에 따로 저장해야 하고 소유권과 권한을 그에 맞게 설정해야 한다
+
+
+    * 방문자 카운터 파일
+
+    /var/www/html에 counter.dat 파일을 만들고 권한과 소유권 설정한다
+ 
+    
+    * 접속자 리스트 파일설정
+
+    /var/www/html에 user_sessions.txt를 만들고 소유권과 권한을 설정한다
+
+
+
+
+
+1. 접속자리스트에 대한 파일   
+
+$ sudo vi user_sessions.txt  만들고
+
+$ sudo chmod 666 /var/www/html/user_sessions.txt  
+
+$ sudo chown www-data:www-data /var/www/html/user_sessions.txt
+
+
+2. 방문자 카운터 설정
+
+$ sudo vi /var/www/html/counter.dat
+
+$ sudo chown www-data:www-data /var/www/html/counter.dat
+
+$ sudo chmod 666 /var/www/html/counter.dat
+
+
