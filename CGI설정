@@ -44,16 +44,11 @@ C프로그램 웹브라우저 실행 방법
     /var/www/html에 따로 저장해야 하고 소유권과 권한을 그에 맞게 설정해야 한다
 
 
-    * 방문자 카운터 파일
+    * 방문자 카운터 파일 (카운터가 동일아이피에서 올라가면 unique_visitors.txt파일 다시 만들고 설정해야 한다) 
 
-    /var/www/html에 counter.dat 파일을 만들고 권한과 소유권 설정한다
+    /var/www/html에 unique_visitors.txt 파일을 만들고 권한과 소유권 설정한다
  
     
-    * 접속자 리스트 파일설정
-
-    /var/www/html에 user_sessions.txt를 만들고 소유권과 권한을 설정한다
-
-
     * 페이지 내에서 쉘스크립트 호출(몇가지 방법중 보안성이 높은 방법임)
 
     1. /var/www/html에 scripts디렉토리 하나를 만들고,  작성된 donation.sh 넣고,
@@ -66,27 +61,20 @@ C프로그램 웹브라우저 실행 방법
 
 
 
-1. 접속자리스트에 대한 파일   
-
-$ sudo vi user_sessions.txt  만들고
-
-$ sudo chmod 666 /var/www/html/user_sessions.txt  
-
-$ sudo chown www-data:www-data /var/www/html/user_sessions.txt
 
 
-2. 방문자 카운터 설정  (파일변경시 기존파일 삭제 후 다시 만들고 설정해야 함)
+1. 방문자 카운터 설정  (파일변경시 기존파일 삭제 후 다시 만들고 설정해야 함)
 
-$ sudo vi /var/www/html/counter.dat
+$ sudo vi /var/www/html/unique_visitors.txt
 
-$ sudo chown www-data:www-data /var/www/html/counter.dat
+$ sudo chown www-data:www-data /var/www/html/unique_visitors.txt
 
-$ sudo chmod 666 /var/www/html/counter.dat
+$ sudo chmod 666 /var/www/html/unique_visitors.txt
 
 
-3. 쉘스크립트를 페이지 내에서 호출
+2. 쉘스크립트를 페이지 내에서 호출
 
- 3-1.   $ sudo mkdir /var/www/html/scripts
+ 2-1.   $ sudo mkdir /var/www/html/scripts
 
         $ sudo vi /var/www/html/scripts/donation.sh
 
@@ -95,7 +83,7 @@ $ sudo chmod 666 /var/www/html/counter.dat
         $ sudo chown www-data:www-data /var/www/html/scripts/donation.sh
 
 
- 3-2.   $ sudo vi /usr/lib/cgi-bin/donate.c 작성후 컴파일할 것
+ 2-2.   $ sudo vi /usr/lib/cgi-bin/donate.c 작성후 컴파일할 것
 
     // 이렇게 한 후에 재클릭하여 실행결과가 없어지게 하는것은
     // 자바스크립트에 토글기능을 추가하면 된다

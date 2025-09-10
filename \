@@ -1,0 +1,4 @@
+
+sudo ffmpeg -f alsa -i hw:0,0 http://125.251.58.88:8090/feed2.ffm
+
+sudo ffmpeg -s 320x240 -i /dev/video0 http://125.251.58.88:8090/feed1.ffm

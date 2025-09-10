@@ -1,0 +1,12 @@
+
+ 채팅창 만들기
+
+ 1. (실행권한과 소유권확인) write.cgi   read.cgi 파일을 만들어서 /cgi-bin 디렉토리로 ..
+
+ 2. chat.log 파일을 만들어서 /var/www/html 디렉토리로..
+
+ 3. sudo chown www-data:www-data /var/www/html/chat.log
+
+ 4. sudo chmod 664 /var/www/html/chat.log
+
+ 5. chat.html 파일을 만들어서 /var/www/html 디렉토리로.. 
