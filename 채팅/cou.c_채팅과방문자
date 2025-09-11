@@ -1,0 +1,345 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include <sys/file.h> // 파일 잠금(flock)을 위해 추가
+#include <sys/stat.h> // 파일 정보(stat)를 얻기 위해 추가
+
+// 방문자 카운터 파일을 정의합니다.
+#define COUNTER_FILE "/var/www/html/counter.dat"
+// 오늘 방문한 IP 주소를 기록할 파일을 정의합니다.
+#define UNIQUE_VISITORS_FILE "/var/www/html/unique_visitors.txt"
+
+// 쉘 명령어의 출력을 HTML로 출력하는 함수
+void execute_shell_and_print(const char* command) {
+    FILE *fp;
+    char path[1024];
+    fp = popen(command, "r");
+    if (fp == NULL) {
+        printf("<p style=\"color: red;\">쉘 명령어를 실행할 수 없습니다.</p>\n");
+        return;
+    }
+    printf("<pre>\n");
+    while (fgets(path, sizeof(path) - 1, fp) != NULL) {
+        printf("%s", path);
+    }
+    printf("</pre>\n");
+    pclose(fp);
+}
+
+int main(void) {
+    printf("Content-Type: text/html\n\n");
+
+    // === 방문자 카운터 로직 수정 ===
+    FILE *fp_count;
+    FILE *fp_unique;
+    int count = 0;
+    const char *remote_addr = getenv("REMOTE_ADDR");
+    int new_visitor = 1; // 새로운 방문자인지 확인하는 플래그
+
+    // 현재 날짜와 파일의 최종 수정 날짜를 비교하여 파일 초기화
+    struct stat st;
+    time_t now = time(NULL);
+    struct tm *today = localtime(&now);
+    
+    if (stat(UNIQUE_VISITORS_FILE, &st) == 0) {
+        struct tm *file_date = localtime(&st.st_mtime);
+        if (today->tm_year != file_date->tm_year || 
+            today->tm_mon != file_date->tm_mon || 
+            today->tm_mday != file_date->tm_mday) {
+            // 날짜가 바뀌었으면 파일 초기화
+            remove(UNIQUE_VISITORS_FILE);
+            remove(COUNTER_FILE);
+        }
+    }
+
+    // IP 기록 파일 열기 (읽기/쓰기 모드)
+    fp_unique = fopen(UNIQUE_VISITORS_FILE, "r+");
+    if (fp_unique == NULL) {
+        fp_unique = fopen(UNIQUE_VISITORS_FILE, "w+");
+        if (fp_unique == NULL) {
+            printf("<h1>Error: Could not open unique visitors file.</h1>\n");
+            return 1;
+        }
+    }
+
+    // 파일 잠금 (exclusive lock)
+    if (flock(fileno(fp_unique), LOCK_EX) == -1) {
+        fclose(fp_unique);
+        printf("<h1>Error: Failed to lock file.</h1>\n");
+        return 1;
+    }
+
+    // 파일에서 현재 IP가 있는지 확인
+    char line[50];
+    while (fgets(line, sizeof(line), fp_unique) != NULL) {
+        line[strcspn(line, "\n")] = 0; // 개행문자 제거
+        if (remote_addr != NULL && strcmp(line, remote_addr) == 0) {
+            new_visitor = 0; // 이미 방문한 IP
+            break;
+        }
+    }
+
+    // 새로운 방문자일 경우 카운트 증가 및 IP 기록
+    if (new_visitor) {
+        // 카운터 파일 열기 (읽기/쓰기 모드)
+        fp_count = fopen(COUNTER_FILE, "r+");
+        if (fp_count == NULL) {
+            fp_count = fopen(COUNTER_FILE, "w+");
+            if (fp_count == NULL) {
+                flock(fileno(fp_unique), LOCK_UN);
+                fclose(fp_unique);
+                printf("<h1>Error: Could not open counter file.</h1>\n");
+                return 1;
+            }
+        }
+        
+        // 카운터 파일 읽기
+        fscanf(fp_count, "%d", &count);
+        count++;
+        
+        // 파일 포인터를 맨 앞으로 이동하여 덮어쓰기
+        rewind(fp_count);
+        fprintf(fp_count, "%d", count);
+        fclose(fp_count);
+        
+        // IP 기록 파일에 새 IP 추가
+        fprintf(fp_unique, "%s\n", remote_addr);
+    } else {
+        // 기존 방문자는 카운터 파일 읽기만
+        fp_count = fopen(COUNTER_FILE, "r");
+        if (fp_count != NULL) {
+            fscanf(fp_count, "%d", &count);
+            fclose(fp_count);
+        }
+    }
+
+    // 파일 잠금 해제
+    flock(fileno(fp_unique), LOCK_UN);
+    fclose(fp_unique);
+    // ===========================
+    
+    // HTML 문서의 시작을 출력합니다.
+    printf("<!DOCTYPE html>\n");
+    printf("<html lang=\"ko\">\n");
+    printf("<head>\n");
+    printf("    <meta charset=\"UTF-8\">\n");
+    printf("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n");
+    printf("    <title>아날로그 사운드의 소울</title>\n");
+
+    // CSS 스타일을 출력합니다.
+    printf("    <style>\n");
+    printf("        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');\n");
+    printf("        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f0f0f0; color: #333; line-height: 1.6; margin: 0; padding: 40px 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; text-align: center; }\n");
+    printf("        .header-section { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; }\n");
+    printf("        .header-image-main { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 4px solid #00796b; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease; }\n");
+    printf("        .header-image-main:hover { transform: scale(1.05); }\n");
+    printf("        .header-image-sub { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 3px solid #e65100; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease; }\n");
+    printf("        .header-image-sub:hover { transform: scale(1.05); }\n");
+    printf("        .container { max-width: 800px; padding: 30px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); border: 1px solid #ddd; margin-bottom: 20px; }\n");
+    printf("        h1 { color: #00796b; font-weight: 700; font-size: 2.5em; margin-bottom: 20px; }\n");
+    printf("        p { font-size: 1.1em; font-weight: 300; margin-bottom: 20px; }\n");
+    printf("        .highlight { color: #e65100; font-weight: 700; }\n");
+    printf("        .list-container { margin-top: 30px; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }\n");
+    printf("        .list-item { background-color: #fafafa; padding: 15px; border-radius: 8px; width: 45%; box-sizing: border-box; border-left: 3px solid #00796b; text-align: left; }\n");
+    printf("        .list-item h3 { color: #333; margin: 0 0 10px; font-weight: 400; font-size: 1.2em; }\n");
+    printf("        .list-item ul { list-style: none; padding: 0; margin: 0; }\n");
+    printf("        .list-item li { margin-bottom: 5px; font-size: 0.95em; }\n");
+    printf("        .banner-container { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }\n");
+    printf("        .banner-container img { width: 150px; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); cursor: pointer; transition: transform 0.3s ease; }\n");
+    printf("        .banner-container img:hover { transform: scale(1.03); }\n");
+    printf("        .footer-info { margin-top: 40px; padding: 20px; background-color: #f0f0f0; border-top: 1px solid #ddd; color: #666; font-size: 0.9em; }\n");
+    printf("        .footer-info p { margin: 5px 0; }\n");
+    printf("        .counter-container { background-color: #e0f2f1; border-radius: 8px; padding: 15px; margin-top: 20px; margin-bottom: 20px; border: 2px solid #00796b; font-size: 1.1em; }\n");
+    printf("        .counter-container strong { color: #e65100; }\n");
+    printf("        pre { background-color: #333; color: #f0f0f0; padding: 10px; border-radius: 5px; overflow-x: auto; text-align: left; }\n");
+    printf("        .stream-container { display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 20px; }\n");
+    printf("        .image-stream-container {\n");
+    printf("            border-radius: 12px;\n");
+    printf("            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);\n");
+    printf("            overflow: hidden;\n");
+    printf("            width: 300px;\n");
+    printf("            height: 200px;\n");
+    printf("            background-color: #333;\n");
+    printf("            display: flex;\n");
+    printf("            justify-content: center;\n");
+    printf("            align-items: center;\n");
+    printf("        }\n");
+    printf("        .image-stream {\n");
+    printf("            width: 100%%;\n");
+    printf("            height: 100%%;\n");
+    printf("            object-fit: contain;\n");
+    printf("        }\n");
+    printf("        .audio-stream-container {\n");
+    printf("            width: 300px;\n");
+    printf("            height: 67px; /* 200px의 1/3 */\n");
+    printf("        }\n");
+    printf("        .audio-stream {\n");
+    printf("            width: 100%%;\n");
+    printf("            height: 100%%;\n");
+    printf("        }\n");
+    printf("        .main-content-wrapper { display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 30px; max-width: 1200px; margin: 0 auto; }\n");
+    printf("        .main-content { flex-grow: 1; }\n");
+    printf("        .link-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }\n");
+    printf("        .link-row a { text-decoration: none; color: #00796b; font-weight: 700; padding: 10px 15px; border: 2px solid #00796b; border-radius: 8px; transition: background-color 0.3s ease, color 0.3s ease; }\n");
+    printf("        .link-row a:hover { background-color: #00796b; color: #fff; }\n");
+    printf("        #donation-result { margin-top: 15px; padding: 15px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; }\n");
+    printf("        #location-result { margin-top: 15px; padding: 15px; background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; }\n");
+    printf("        .refresh-banner { text-align: center; font-size: 0.9em; background-color: #f0f0f0; padding: 5px; border-bottom: 1px solid #ddd; }\n");
+    printf("    </style>\n");
+    printf("</head>\n");
+    printf("<body>\n");
+
+    // === 새로고침 안내 배너 ===
+    printf("    <div class=\"refresh-banner\">\n");
+    printf("        <p>새로고침후에는 <a href=\"#\" onclick=\"window.location.reload(); return false;\">오디오 재생 버튼</a>을 다시 눌러야 됩니다</p>\n");
+    printf("    </div>\n");
+    // ===========================
+
+    // 메인 컨텐츠와 방문자 카운터를 감싸는 wrapper 시작
+    printf("    <div class=\"main-content-wrapper\">\n");
+
+    // 메인 컨텐츠
+    printf("        <div class=\"main-content\">\n");
+    printf("            <div class=\"container\">\n");
+    printf("                <div class=\"stream-container\">\n");
+    printf("                    <div class=\"image-stream-container\">\n");
+    printf("                        <img id=\"liveImage\" class=\"image-stream\" src=\"\" alt=\"Live Feed\">\n");
+    printf("                    </div>\n");
+    printf("                    <div class=\"audio-stream-container\">\n");
+    printf("                        <audio id=\"liveAudio\" class=\"audio-stream\" controls autoplay></audio>\n");
+    printf("                    </div>\n");
+    printf("                </div>\n");
+    printf("            </div>\n");
+    printf("            <div style=\"margin-bottom: 20px;\">\n"); 
+    printf("                <a href=\"#\" id=\"location-link\">장소</a>\n");
+    printf("            </div>\n");
+    printf("            <div class=\"banner-container\">\n");
+    printf("                <a href=\"http://pip49.com\"><img src=\"/1.jpg\" alt=\"쇼핑\"></a>\n");
+    printf("                <a href=\"http://band49.com\"><img src=\"/2.jpg\" alt=\"게시판\"></a>\n");
+    printf("            </div>\n");
+    printf("            <div id=\"location-result\"></div>\n"); // 장소 결과 표시 영역
+    printf("            <div id=\"donation-result\"></div>\n"); // 후원금 결과 표시 영역
+    printf("            <div class=\"link-row\">\n");
+    printf("                <a href=\"#\" id=\"donation-link\">후원금을 받습니다</a>\n");
+    printf("            </div>\n");
+    printf("            <div class=\"footer-info\">\n");
+    printf("                <p> P앤I PUNCH</p>\n");
+    printf("                <p> 함병철</p>\n");
+    printf("                <p> 서울시 강동구 성내로15길65</p>\n");
+    printf("                <p> Tel) 02) 479-3246</p>\n");
+    printf("                <p> Email) hambyeongcheol44@gmail.com</p>\n");
+    printf("            </div>\n");
+    printf("        </div>\n"); // 메인 컨텐츠 div 끝
+
+    // === 여기에 채팅창 iframe을 추가합니다 ===
+    printf("        <div class=\"chat-wrapper\">\n");
+    printf("            <iframe src=\"/chat.html\" frameborder=\"0\" style=\"width: 350px; height: 500px;\"></iframe>\n");
+    printf("        </div>\n");
+    // ===================================
+    
+    // 방문자 카운터 컨테이너
+    printf("        <div class=\"counter-container\">\n");
+    printf("            <p>오늘 방문자 수: <strong>%d</strong></p>\n", count);
+    printf("        </div>\n");
+
+    printf("    </div>\n"); // 메인 컨텐츠 wrapper div 끝
+
+    printf("    <script>\n");
+    printf("        document.getElementById('donation-link').addEventListener('click', function(event) {\n");
+    printf("            event.preventDefault();\n");
+    printf("            var resultDiv = document.getElementById('donation-result');\n");
+    printf("            if (resultDiv.innerHTML.trim() !== '') {\n");
+    printf("                resultDiv.innerHTML = '';\n");
+    printf("            } else {\n");
+    printf("                resultDiv.innerHTML = '스크립트를 실행 중입니다...';\n");
+    printf("                fetch('/cgi-bin/donate.cgi')\n");
+    printf("                    .then(response => {\n");
+    printf("                        if (!response.ok) {\n");
+    printf("                            throw new Error('네트워크 응답이 올바르지 않습니다.');\n");
+    printf("                        }\n");
+    printf("                        return response.text();\n");
+    printf("                    })\n");
+    printf("                    .then(data => {\n");
+    printf("                        var parser = new DOMParser();\n");
+    printf("                        var doc = parser.parseFromString(data, 'text/html');\n");
+    printf("                        var preContent = doc.querySelector('pre');\n");
+    printf("                        if (preContent) {\n");
+    printf("                            resultDiv.innerHTML = preContent.innerHTML;\n");
+    printf("                        } else {\n");
+    printf("                            resultDiv.innerHTML = '스크립트 실행 결과가 없습니다.';\n");
+    printf("                        }\n");
+    printf("                    })\n");
+    printf("                    .catch(error => {\n");
+    printf("                        resultDiv.innerHTML = '<p style=\"color: red;\">오류: ' + error.message + '</p>';\n");
+    printf("                        console.error('Fetch error:', error);\n");
+    printf("                    });\n");
+    printf("            }\n");
+    printf("        });\n");
+    printf("\n");
+    printf("        document.getElementById('location-link').addEventListener('click', function(event) {\n");
+    printf("            event.preventDefault();\n");
+    printf("            var resultDiv = document.getElementById('location-result');\n");
+    printf("            if (resultDiv.innerHTML.trim() !== '') {\n");
+    printf("                resultDiv.innerHTML = '';\n");
+    printf("            } else {\n");
+    printf("                resultDiv.innerHTML = '장소 정보를 실행 중입니다...';\n");
+    printf("                fetch('/cgi-bin/place.cgi')\n");
+    printf("                    .then(response => {\n");
+    printf("                        if (!response.ok) {\n");
+    printf("                            throw new Error('네트워크 응답이 올바르지 않습니다.');\n");
+    printf("                        }\n");
+    printf("                        return response.text();\n");
+    printf("                    })\n");
+    printf("                    .then(data => {\n");
+    printf("                        resultDiv.innerHTML = '<pre>' + data + '</pre>';\n");
+    printf("                    })\n");
+    printf("                    .catch(error => {\n");
+    printf("                        resultDiv.innerHTML = '<p style=\"color: red;\">오류: ' + error.message + '</p>';\n");
+    printf("                        console.error('Fetch error:', error);\n");
+    printf("                    });\n");
+    printf("            }\n");
+    printf("        });\n");
+    printf("\n");
+    printf("        var audio1 = document.getElementById('audio1');\n");
+    printf("        var audio2 = document.getElementById('audio2');\n");
+    printf("        var audio3 = document.getElementById('audio3');\n");
+    printf("        var currentAudio = null;\n");
+    printf("\n");
+    printf("        function playAudio(audioId) {\n");
+    printf("            var audio = document.getElementById(audioId);\n");
+    printf("            if (currentAudio && currentAudio !== audio) {\n");
+    printf("                currentAudio.pause();\n");
+    printf("                currentAudio.currentTime = 0;\n");
+    printf("            }\n");
+    printf("            if (audio.paused) {\n");
+    printf("                audio.play();\n");
+    printf("                currentAudio = audio;\n");
+    printf("            } else {\n");
+    printf("                audio.pause();\n");
+    printf("            }\n");
+    printf("        }\n");
+    printf("\n");
+    printf("        document.addEventListener('DOMContentLoaded', function() {\n");
+    printf("            var liveImage = document.getElementById('liveImage');\n");
+    printf("            var imageUrl = 'http://125.251.58.88:8090/test.mpjpeg';\n");
+    printf("            if (liveImage) {\n");
+    printf("                setInterval(function() {\n");
+    printf("                    liveImage.src = imageUrl + '?' + new Date().getTime();\n");
+    printf("                }, 1000);\n");
+    printf("            }\n");
+    printf("\n");
+    printf("            var liveAudio = document.getElementById('liveAudio');\n");
+    printf("            var audioUrl = 'http://125.251.58.88:8090/test.wav';\n");
+    printf("            if (liveAudio) {\n");
+    printf("                liveAudio.src = audioUrl;\n");
+    printf("            }\n");
+    printf("        });\n");
+    printf("    </script>\n");
+    printf("</body>\n");
+    printf("</html>\n");
+    
+    return 0;
+}
