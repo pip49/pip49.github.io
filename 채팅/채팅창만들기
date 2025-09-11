@@ -1,0 +1,22 @@
+
+ 채팅창 만들기 ************** 브라우저에 주소는  125.251.58.88:49494/chat.html
+
+ 1. (실행권한과 소유권확인) write.cgi   read.cgi 파일을 만들어서 /cgi-bin 디렉토리로 ..
+          ** chat.cgi  = 755 root root 
+	  ** write.cgi = 755 root root
+          ** read.cgi  = 755 root root
+
+
+
+
+ 2. chat.log 파일을 만들어서 /var/www/html 디렉토리로..
+           
+ 3. chat.html 파일을 만들어서 /var/www/html 디렉토리로.. 
+
+          ** chat.log  = 664 www-data www-data
+          ** chat.html = 644 root root 
+
+
+
+
+

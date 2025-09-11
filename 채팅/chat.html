@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>세련된 CGI 채팅</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        #chatbox {
+            border: 1px solid #e0e0e0;
+            height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fbfbfb;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message-item {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            background-color: #e6f7ff;
+            color: #333;
+            max-width: 80%;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            align-self: flex-start;
+        }
+        .message-item.own-message {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+        .message-item strong {
+            color: #007bff;
+            font-weight: 600;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        form input[type='text'] {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        form input[name='username'] {
+            flex-basis: 30%;
+        }
+        form input[name='message'] {
+            flex-basis: 65%;
+        }
+        form input[type='submit'] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease;
+            flex-grow: 1;
+        }
+        form input[type='submit']:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>세련된 CGI 채팅</h1>
+        <div id="chatbox">
+            </div>
+        <form action="/cgi-bin/write.cgi" method="GET">
+          <input type="text" name="username" id="username-input" placeholder="닉네임" required>
+
+          <input type="text" name="message" placeholder="메시지 입력" required>
+          <input type="submit" value="보내기">
+        </form>
+    </div>
+<script>
+    // URL에서 쿼리 파라미터를 읽어오는 함수
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // 3초마다 메시지를 새로고침하고 스크롤을 내리는 함수
+    function refreshChat() {
+        fetch('/cgi-bin/read.cgi')
+            .then(response => response.text())
+            .then(htmlContent => {
+                const chatbox = document.getElementById('chatbox');
+                const isScrolledToBottom = chatbox.scrollHeight - chatbox.clientHeight <= chatbox.scrollTop + 1;
+
+                chatbox.innerHTML = htmlContent;
+
+                if (isScrolledToBottom) {
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                }
+            })
+            .catch(error => console.error('Error fetching chat messages:', error));
+    }
+
+    // 페이지가 완전히 로드되면 실행되는 메인 함수
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. URL에서 닉네임 파라미터를 읽어와 입력창에 채우기
+        const urlUsername = getUrlParameter('username');
+        if (urlUsername) {
+            document.getElementById('username-input').value = urlUsername;
+        }
+
+        // 2. 초기 채팅 내용을 불러오고 스크롤을 맨 아래로 내림
+        refreshChat();
+        
+        // 3. 3초마다 채팅창 자동 갱신 시작
+        setInterval(refreshChat, 3000);
+    });
+</script>
+</body>
+</html>
