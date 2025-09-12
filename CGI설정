@@ -69,7 +69,7 @@ $ sudo vi /var/www/html/unique_visitors.txt
 
 $ sudo chown www-data:www-data /var/www/html/unique_visitors.txt
 
-$ sudo chmod 666 /var/www/html/unique_visitors.txt
+$ sudo chmod 664 /var/www/html/unique_visitors.txt
 
 
 2. 쉘스크립트를 페이지 내에서 호출
