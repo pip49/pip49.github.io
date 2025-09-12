@@ -55,7 +55,6 @@
 
             fetch(url, { method: 'GET' })
                 .then(response => {
-                    // write.c가 새로고침 스크립트를 반환하므로 추가 처리는 필요 없음
                     // 메시지 입력창 비우기
                     event.target.elements.message.value = '';
                 })
