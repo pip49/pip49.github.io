@@ -1,79 +1,51 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h> // sleep 함수를 위해 추가
+<script>
+    // 3초마다 메시지를 새로고침하고 스크롤을 내리는 함수
+    function refreshChat() {
+        fetch('/cgi-bin/read.cgi', {
+            method: 'POST',
+            body: JSON.stringify({}) // 빈 데이터를 보내 POST 요청임을 명확히 함
+        })
+        .then(response => response.text())
+        .then(htmlContent => {
+            const chatbox = document.getElementById('chatbox');
+            const isScrolledToBottom = chatbox.scrollHeight - chatbox.clientHeight <= chatbox.scrollTop + 1;
 
-// URL 디코딩 함수 선언
-void url_decode(char *dest, const char *src);
+            chatbox.innerHTML = htmlContent;
 
-int main(void) {
-    char *query_string = getenv("QUERY_STRING");
-    FILE *fp;
+            if (isScrolledToBottom) {
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        })
+        .catch(error => console.error('Error fetching chat messages:', error));
+    }
 
-    char username[256] = "";
-    char message[256] = "";
-    
-    // 쿼리 문자열이 있을 경우 처리
-    if (query_string != NULL) {
-        char decoded_query[512] = "";
+    // 닉네임을 로컬 스토리지에 저장하는 함수
+    function saveUsername(username) {
+        if (username) {
+            localStorage.setItem('chatUsername', username);
+        }
+    }
+
+    // 페이지가 완전히 로드되면 실행되는 메인 함수
+    document.addEventListener('DOMContentLoaded', () => {
+        const usernameInput = document.getElementById('username-input');
         
-        // 쿼리 문자열을 디코딩
-        url_decode(decoded_query, query_string);
-
-        // 디코딩된 문자열에서 닉네임과 메시지를 파싱
-        sscanf(decoded_query, "username=%[^&]&message=%[^\n]", username, message);
-
-        // chat.log 파일에 메시지 추가 (a: append 모드)
-        fp = fopen("/var/www/html/chat.log", "a");
-        if (fp != NULL) {
-            fprintf(fp, "%s: %s\n", username, message);
-            fclose(fp);
+        // 1. 로컬 스토리지에서 닉네임 불러오기
+        const savedUsername = localStorage.getItem('chatUsername');
+        if (savedUsername) {
+            usernameInput.value = savedUsername;
         }
-    }
-    
-    // HTTP 헤더: Content-Type과 캐시 방지 헤더를 출력
-    printf("Content-Type: text/html\n");
-    printf("Cache-Control: no-cache, no-store, must-revalidate\n");
-    printf("Pragma: no-cache\n");
-    printf("Expires: 0\n\n");
-    
-    // 메시지 처리 후 부모 창을 새로고침하는 HTML과 자바스크립트를 출력
-    printf("<!DOCTYPE html>\n");
-    printf("<html>\n");
-    printf("<head>\n");
-    printf("    <title>Message Sent</title>\n");
-    printf("    <script>\n");
-    printf("        // 부모 창을 새로고침합니다.\n");
-    printf("        window.parent.location.reload();\n");
-    printf("    </script>\n");
-    printf("</head>\n");
-    printf("<body>\n");
-    printf("</body>\n");
-    printf("</html>\n");
 
-    return 0;
-}
+        // 2. 닉네임 입력 시 로컬 스토리지에 저장
+        usernameInput.addEventListener('input', (event) => {
+            saveUsername(event.target.value);
+        });
 
-// URL 디코딩 함수
-void url_decode(char *dest, const char *src) {
-    int i = 0, j = 0;
-    while (src[i] != '\0') {
-        if (src[i] == '%') {
-            char hex[3];
-            hex[0] = src[i+1];
-            hex[1] = src[i+2];
-            hex[2] = '\0';
-            dest[j] = (char)strtol(hex, NULL, 16);
-            i += 3;
-        } else if (src[i] == '+') {
-            dest[j] = ' ';
-            i++;
-        } else {
-            dest[j] = src[i];
-            i++;
-        }
-        j++;
-    }
-    dest[j] = '\0';
-}
+        // 3. 초기 채팅 내용을 불러오고 스크롤을 맨 아래로 내림
+        refreshChat();
+        
+        // 4. 3초마다 채팅창 자동 갱신 시작
+        setInterval(refreshChat, 3000);
+    });
+</script>
