@@ -1,0 +1,71 @@
+
+<script>
+    // 3초마다 메시지를 새로고침하고 스크롤을 내리는 함수
+    function refreshChat() {
+        fetch('/cgi-bin/read.cgi', {
+            method: 'POST',
+            body: JSON.stringify({}) // 빈 데이터를 보내 POST 요청임을 명확히 함
+        })
+        .then(response => response.text())
+        .then(htmlContent => {
+            const chatbox = document.getElementById('chatbox');
+            const isScrolledToBottom = chatbox.scrollHeight - chatbox.clientHeight <= chatbox.scrollTop + 1;
+
+            chatbox.innerHTML = htmlContent;
+
+            if (isScrolledToBottom) {
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }
+        })
+        .catch(error => console.error('Error fetching chat messages:', error));
+    }
+
+    // 닉네임을 로컬 스토리지에 저장하는 함수
+    function saveUsername(username) {
+        if (username) {
+            localStorage.setItem('chatUsername', username);
+        }
+    }
+
+    // 페이지가 완전히 로드되면 실행되는 메인 함수
+    document.addEventListener('DOMContentLoaded', () => {
+        const usernameInput = document.getElementById('username-input');
+        const chatForm = document.querySelector('form');
+
+        // 1. 로컬 스토리지에서 닉네임 불러오기
+        const savedUsername = localStorage.getItem('chatUsername');
+        if (savedUsername) {
+            usernameInput.value = savedUsername;
+        }
+
+        // 2. 닉네임 입력 시 로컬 스토리지에 저장 (실시간 저장)
+        usernameInput.addEventListener('input', (event) => {
+            saveUsername(event.target.value);
+        });
+
+        // 3. 폼 제출 시 기본 동작을 막고, JavaScript로 처리
+        chatForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // 기본 제출 동작 막기
+
+            const username = usernameInput.value;
+            const message = event.target.elements.message.value;
+
+            // 닉네임과 메시지를 URL에 추가하여 write.cgi로 전송
+            const url = `/cgi-bin/write.cgi?username=${encodeURIComponent(username)}&message=${encodeURIComponent(message)}`;
+
+            fetch(url, { method: 'GET' })
+                .then(response => {
+                    // write.c가 새로고침 스크립트를 반환하므로 추가 처리는 필요 없음
+                    // 메시지 입력창 비우기
+                    event.target.elements.message.value = '';
+                })
+                .catch(error => console.error('Error submitting message:', error));
+        });
+
+        // 4. 초기 채팅 내용을 불러오고 스크롤을 맨 아래로 내림
+        refreshChat();
+
+        // 5. 3초마다 채팅창 자동 갱신 시작
+        setInterval(refreshChat, 3000);
+    });
+</script>
