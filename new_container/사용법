@@ -1,0 +1,14 @@
+
+  // 새로운 컨테이너 추가하여 서버에서 직접실행하여 가사..등을 볼 수 있도록 실행
+ 
+  
+  1. co1.c 파일의   <div..컨테이너부분>  265에서 268 추가
+                    <script 부분>        382에서 400 추가 
+
+  2. /usr/lib/cgi-bin/shell_result.cgi 생성 
+
+  3. /var/www/html/scripts/new.sh 작성
+
+
+  주의점 .. new.sh의 파일명 변경시 경로/파일명 수정해야 함 .. shell_result.c 
+                                                       
