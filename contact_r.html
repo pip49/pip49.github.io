@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 DIY 앰프 | 제품 소개 및 문의</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* [모바일 대응 및 세련된 디자인을 위한 전체 CSS] */
+        :root {
+            --primary-color: #A98054; /* 포인트 색상: 차분한 골드/브라운 */
+            --text-color: #263238; /* 메인 텍스트: 짙은 차콜 */
+            --light-text: #78909C; /* 보조 텍스트 */
+            --container-bg: rgba(255, 255, 255, 0.95); /* 반투명 흰색 */
+            --header-footer-bg: rgba(255, 255, 255, 0.98);
+            --contact-bg: rgba(240, 240, 240, 0.95);
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 300;
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            color: var(--text-color);
+
+            /* 👇👇👇 스크롤 고정 레이아웃을 위한 핵심 CSS 추가 👇👇👇 */
+            height: 100vh; /* 뷰포트 높이만큼 설정 */
+            display: flex; /* Flexbox 활성화 */
+            flex-direction: column; /* 요소를 위에서 아래로 정렬 */
+            overflow: hidden; /* 전체 body에는 스크롤을 막습니다 (내부 main에서 처리) */
+
+            /* 배경 이미지 설정 */
+            background-image: url('20220626_080329.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        /* === 헤더 (Sticky Header) === */
+        header {
+            background-color: var(--header-footer-bg);
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            flex-shrink: 0; /* 헤더는 줄어들지 않도록 고정 */
+        }
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+        }
+        .logo a {
+            font-size: 1.7em;
+            font-weight: 500;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+        nav ul li {
+            margin-left: 30px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 400;
+            padding-bottom: 5px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom 0.3s, color 0.3s;
+        }
+        nav ul li a:hover {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* === 메인 섹션 === */
+        main {
+            padding: 60px 0;
+            /* 👇👇👇 메인 영역이 남은 공간을 채우고 스크롤을 처리하도록 설정 👇👇👇 */
+            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            overflow-y: auto; /* 콘텐츠가 길어지면 메인 영역 안에서만 스크롤 발생 */
+        }
+        section {
+            margin-bottom: 40px;
+            padding: 40px;
+            background: var(--container-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s;
+        }
+        section:hover {
+            transform: translateY(-2px);
+        }
+        h2 {
+            font-size: 1.8em;
+            font-weight: 300;
+            color: var(--primary-color);
+            border-bottom: 1px solid #ECEFF1;
+            padding-bottom: 15px;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        /* 상품 이미지 및 상세 정보 스타일 */
+        .product-detail {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .product-image-box {
+            flex: 1;
+            max-width: 400px;
+        }
+        .product-image-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-info {
+            flex: 2;
+        }
+
+        .product-info h3 {
+            font-size: 2em;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .product-info p.price {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #D32F2F; /* 가격 강조 */
+            margin-bottom: 20px;
+        }
+        .product-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .product-info ul li {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            border-left: 3px solid var(--primary-color);
+            padding-left: 15px;
+        }
+
+	/* 행동 유도 (CTA) 버튼 스타일 - 외곽선 및 크기 축소 유지 */
+    .cta-button {
+        display: inline-block;
+        background-color: transparent; /* 배경 투명 */
+        color: #1976D2; /* 텍스트 색상을 테두리 색상과 동일하게 */
+        border: 2px solid #1976D2; /* 파란색 외곽선 추가 */
+
+        font-size: 1.1em;
+        padding: 8px 20px; /* 크기를 절반 수준으로 축소 */
+
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+        letter-spacing: 0.5px;
+        box-shadow: none;
+        transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+
+    .cta-button:hover {
+        background-color: #1976D2; /* 호버 시 배경색을 채움 */
+        color: white; /* 호버 시 텍스트 색상을 흰색으로 변경 */
+        box-shadow: none;
+    }
+
+        /* === 푸터 === */
+        footer {
+            background-color: var(--header-footer-bg);
+            color: var(--light-text);
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0; /* 푸터는 줄어들지 않도록 고정 */
+        }
+
+        /* 👇 모바일 반응형 디자인 */
+        @media (max-width: 900px) {
+            .product-detail {
+                flex-direction: column; /* 900px 이하에서 이미지와 정보가 수직으로 쌓임 */
+            }
+            .product-image-box {
+                max-width: 100%; /* 모바일에서 이미지 꽉 채우기 */
+            }
+        }
+        @media (max-width: 768px) {
+            header .container {
+                flex-direction: column;
+                align-items: center;
+                padding: 15px 0;
+            }
+            .logo {
+                margin-bottom: 15px;
+            }
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            nav ul li {
+                margin: 0 10px;
+            }
+            section {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">DIY Audio Solution</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="about.html">프로필</a></li> <li><a href="http://125.251.58.88:49494/audio_page.html">지금듣기</a></li>
+                    <li><a href="contact.html">DIY 제품</a></li> </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <section>
+           <h2>[메인 홍보 상품] 프리미엄 Class-A 앰프 회로 키트</h2>
+                <p>
+                    **압도적인 순도의 사운드**를 직접 만드세요. 오디오 애호가를 위한 최고의 선택, 저희의 플래그십 앰프 키트를 소개합니다.
+                </p>
+
+               <div class="product-detail">
+
+                    <div class="product-image-box">
+                        <img src="6.jpg" alt="프리미엄 Class-A 앰프 회로 이미지">
+		    </div>                                                                
+
+                    <div class="product-info">
+                      <h3>Class-A 순수 증폭 회로 (DIY Ver.)</h3>                  
+
+           <p style="font-size: 1.1em; margin-bottom: 30px;">
+                            최소한의 왜곡으로 아날로그 본연의 소리를 재생합니다. 모든 부품은 엄선된 오디오 전용 그레이드입니다.
+		    </p>         
+
+                  <ul>
+                            <li>**출력:** 15W + 15W (8Ω, 순수 Class-A)</li>
+                            <li>**부품 구성:** Vishay 저항, Nichicon 오디오 캐패시터, 매칭된 트랜지스터 세트 포함</li>
+                            <li>**특징:** PCB 기판 제공, 자세한 조립 매뉴얼 (PDF) 제공</li>
+                        </ul>
+                                    
+				                    <p class="price">특별 가격: ₩ 280,000</p>   
+
+                        <a href="purchase_page.html" class="cta-button">더 자세한 정보보기</a>
+                        <p style="font-size: 0.9em; margin-top: 10px; color: var(--light-text);">
+    			*버튼을 클릭하시면 상세 구매 및 문의 페이지로 이동합니다. 
+			</p>              
+     </div>                
+
+                  </div>                               
+                </section>
+
+                <section>
+                    <h2>추가 제품 소개</h2>
+                    <p>
+                        었습니다.
+		    </p>          
+                    <div style="height: 300px; background-color: #f5f5f5; border-radius: 5px; display: flex; align-items: center; justify-content: center; color: #78909C;">
+                        긴 콘텐츠 영역 Placeholder
+     </div>                                
+</section>   
+
+            </div>
+    </main>                                    
+
+    <footer>
+        <div class="container">
+            <p>DIY Audio Solution. &bull; All rights reserved.</p>
+            <p style="font-size: 0.8em; color: var(--light-text);">사업자 등록번호: 106-05-26400 | 개인정보처리방침</p>
+        </div>
+    </footer>
+
+</body>
+</html>
