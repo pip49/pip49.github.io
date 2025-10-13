@@ -165,6 +165,20 @@
             background-color: #7b1fa2;
         }
 
+        /* 👇 방명록/게시판 버튼 스타일 (차별화를 위해 border만 사용) */
+        .cta-button.guestbook-button {
+            background-color: transparent; /* 배경색 제거 */
+            color: var(--primary-color); /* 텍스트 색상을 기본 색상으로 */
+            border: 2px solid var(--primary-color); /* 경계선 추가 */
+            box-shadow: none;
+            padding: 10px 33px; /* border 두께를 고려하여 padding 조정 */
+        }
+        .cta-button.guestbook-button:hover {
+            background-color: rgba(169, 128, 84, 0.1); /* 호버 시 연한 배경색 */
+            color: var(--primary-color);
+        }
+        /* 👆 방명록/게시판 버튼 스타일 끝 */
+
         /* === 푸터 === */
         footer {
             background-color: var(--header-footer-bg);
@@ -200,6 +214,11 @@
                 flex-direction: column; /* 모바일에서 버튼을 세로로 정렬 */
                 gap: 10px;
             }
+            /* 모바일에서 방명록 버튼은 전체 너비를 사용하도록 설정 */
+            .cta-button.guestbook-button {
+                 width: 100%;
+                 box-sizing: border-box; /* padding과 border가 width에 포함되도록 */
+            }
         }
     </style>
 </head>
@@ -212,10 +231,8 @@
             </div>
             <nav>
                 <ul>
-	<!--    <li><a href="about.html">프로필</a></li>  -->
-                    <li><a href="http://125.251.58.88:49494/audio_page.html">지금듣기</a></li>
-       <!--          <li><a href="contact.html">DIY제품</a></li>  -->
-                </ul>
+	<li><a href="http://125.251.58.88:49494/audio_page.html">지금듣기</a></li>
+       </ul>
             </nav>
         </div>
     </header>
@@ -238,7 +255,11 @@
 		    <a href="sms:01095032032?body=%5BP앤I PUNCH%20회원가입%20희망합니다%5D%0A안녕하세요.%20다음%20줄부터%20문의%20내용을%20작성해%20주세요." class="cta-button call-button">
     전화/문자 문의
 </a>
-                </div>
+
+                    <a href="guestbook.html" class="cta-button guestbook-button">
+                        방명록/게시판
+                    </a>
+                    </div>
 
                 <p style="margin-top: 25px; color: var(--light-text); font-weight: 400;">
                     전화 (상담 시간): 032 (평일 9시~18시)
