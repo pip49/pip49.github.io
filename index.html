@@ -1,12 +1,12 @@
 
-<!DOCTYPE html>
+<!DOCTYPE TML>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>밴드모집, 회원모집</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
         /* CSS 스타일은 4개 파일 모두 동일하게 유지됩니다. */
@@ -165,19 +165,32 @@
             background-color: #7b1fa2;
         }
 
-        /* 👇 방명록/게시판 버튼 스타일 (차별화를 위해 border만 사용) */
-        .cta-button.guestbook-button {
-            background-color: transparent; /* 배경색 제거 */
-            color: var(--primary-color); /* 텍스트 색상을 기본 색상으로 */
-            border: 2px solid var(--primary-color); /* 경계선 추가 */
-            box-shadow: none;
-            padding: 10px 33px; /* border 두께를 고려하여 padding 조정 */
+        /* 👇 [방명록/게시판] 주아 폰트 + 작고 특이한 뱃지 스타일 */
+        .guestbook-jua-badge-container {
+            margin-top: 20px;
+            text-align: center;
         }
-        .cta-button.guestbook-button:hover {
-            background-color: rgba(169, 128, 84, 0.1); /* 호버 시 연한 배경색 */
-            color: var(--primary-color);
+        .guestbook-jua-badge {
+            display: inline-block;
+            font-family: 'Jua', sans-serif; /* 주아 폰트 적용 */
+            font-size: 0.9em; /* 기존 버튼(1.1em)보다 작게 */
+            font-weight: 400;
+            color: #fff;
+            background-color: #5d9d4d; /* 짙은 녹색 계열 (차별화) */
+            text-decoration: none;
+            padding: 6px 15px;
+            border-radius: 50px; /* 둥근 뱃지 형태 */
+            letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s;
         }
-        /* 👆 방명록/게시판 버튼 스타일 끝 */
+        .guestbook-jua-badge:hover {
+            background-color: #79c068;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+        /* 👆 [방명록/게시판] 주아 폰트 + 작고 특이한 뱃지 스타일 끝 */
+
 
         /* === 푸터 === */
         footer {
@@ -188,6 +201,15 @@
             font-size: 0.9em;
             border-top: 1px solid #ddd;
             flex-shrink: 0; /* 푸터는 줄어들지 않도록 고정 */
+        }
+        footer a {
+            /* 푸터 내 링크 스타일링 */
+            color: var(--light-text);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--light-text);
+        }
+        footer a:hover {
+            border-bottom-color: var(--primary-color);
         }
 
         /* 모바일 반응형 디자인 */
@@ -214,11 +236,6 @@
                 flex-direction: column; /* 모바일에서 버튼을 세로로 정렬 */
                 gap: 10px;
             }
-            /* 모바일에서 방명록 버튼은 전체 너비를 사용하도록 설정 */
-            .cta-button.guestbook-button {
-                 width: 100%;
-                 box-sizing: border-box; /* padding과 border가 width에 포함되도록 */
-            }
         }
     </style>
 </head>
@@ -231,8 +248,8 @@
             </div>
             <nav>
                 <ul>
-	<li><a href="http://125.251.58.88:49494/audio_page.html">지금듣기</a></li>
-       </ul>
+	                <li><a href="http://125.251.58.88:49494/audio_page.html">🔊 지금듣기</a></li>
+                </ul>
             </nav>
         </div>
     </header>
@@ -248,18 +265,20 @@
                       후원금을 받습니다 <br>
                 </p>
                 <div class="cta-buttons">
-                    <a href="mailto:hambyeongcheol44@gmail.com?subject=P앤I PUNCH 회원%20상담%20문의" class="cta-button">
+                    <a href="mailto:hambyeongcheol44@gmail.com" class="cta-button">
                         E-Mail 남기기
                     </a>
 
-		    <a href="sms:01095032032?body=%5BP앤I PUNCH%20회원가입%20희망합니다%5D%0A안녕하세요.%20다음%20줄부터%20문의%20내용을%20작성해%20주세요." class="cta-button call-button">
-    전화/문자 문의
-</a>
+                    <a href="sms:01095032032" class="cta-button call-button">
+                        전화/문자 문의
+                    </a>
+                </div>
 
-                    <a href="http://band49.com" class="cta-button guestbook-button">
+                <div class="guestbook-jua-badge-container">
+                    <a href="http://125.251.58.94:49494/cgi-bin/board.cgi" class="guestbook-jua-badge">
                         방명록/게시판
                     </a>
-                    </div>
+                </div>
 
                 <p style="margin-top: 25px; color: var(--light-text); font-weight: 400;">
                     전화(상담 시간):(평일 9시~18시)
@@ -271,6 +290,11 @@
 
     <footer>
         <div class="container">
+            <p style="margin-bottom: 15px; font-size: 1.1em; font-weight: 500;">
+                <a href="donate.html" style="color: #1976D2; border-bottom: 2px solid #1976D2; text-decoration: none; padding-bottom: 2px;">
+                    🔷 후원하기 🔷
+                </a>
+            </p>
             <p>밴드모집/회원모집 &bull; All rights reserved.</p>
             <p style="font-size: 0.8em; color: var(--light-text);">
                 사업자 등록번호: 106-05-26400 |

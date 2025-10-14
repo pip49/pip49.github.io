@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P&I PUNCH 후원하기</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS 스타일은 index.html의 테마를 따릅니다. */
+        :root {
+            --primary-color: #512DA8; /* ✨ 딥 퍼플(Deep Purple)로 변경 */
+            --text-color: #263238;
+            --light-text: #78909C;
+            --container-bg: rgba(255, 255, 255, 0.95);
+            --header-footer-bg: rgba(255, 255, 255, 0.98);
+            --contact-bg: rgba(240, 240, 240, 0.95);
+            --secondary-color: #9575CD; /* 밝은 보라색 강조 색상 */
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-weight: 300;
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-image: url('20220626_080329.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 0;
+            flex-grow: 1;
+        }
+
+        /* === 후원 섹션 스타일 === */
+        .donate-section {
+            padding: 50px 40px;
+            background: var(--container-bg);
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .donate-section h1 {
+            font-family: 'Jua', sans-serif;
+            font-size: 2.5em;
+            color: var(--primary-color); /* 딥 퍼플 적용 */
+            margin-bottom: 10px;
+        }
+
+        .donate-section p.intro {
+            font-size: 1.1em;
+            color: var(--text-color);
+            margin-bottom: 40px;
+        }
+
+        /* 계좌 정보 카드 컨테이너 */
+        .account-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        /* 개별 계좌 카드 */
+        .account-card {
+            background-color: var(--contact-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .account-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .account-card strong {
+            display: block;
+            font-size: 1.2em;
+            color: var(--secondary-color); /* 밝은 보라색 강조색 적용 */
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .account-card .bank-name {
+            font-family: 'Jua', sans-serif;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--primary-color); /* 딥 퍼플 적용 */
+        }
+
+        .account-card .copy-button {
+            background-color: var(--primary-color); /* 딥 퍼플 적용 */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+            font-size: 0.9em;
+        }
+
+        .account-card .copy-button:hover {
+            background-color: #673AB7; /* 살짝 밝은 퍼플로 호버 효과 */
+        }
+
+        /* 풋터 스타일 (index.html과 동일하게 유지) */
+        footer {
+            background-color: var(--header-footer-bg);
+            color: var(--light-text);
+            text-align: center;
+            padding: 20px 0;
+            font-size: 0.9em;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0;
+        }
+        footer a {
+            color: var(--light-text);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--light-text);
+        }
+        footer a:hover {
+            border-bottom-color: var(--primary-color);
+        }
+        .footer-nav {
+            margin-bottom: 10px;
+        }
+        .footer-nav a {
+            font-weight: 500;
+            color: var(--text-color);
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: color 0.3s;
+        }
+        .footer-nav a:hover {
+             color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .donate-section {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="donate-section">
+            <h1>✨ P&I PUNCH 프로젝트 후원 안내 ✨</h1>
+            <p class="intro">
+                저희 밴드모집 및 회원모집 활동의 지속적인 성장을 위해 여러분의 따뜻한 후원을 기다립니다.<br>
+            </p>
+
+            <div class="account-grid">
+
+                <div class="account-card">
+                    <span class="bank-name">IBK기업은행</span>
+                    <strong>010-9707-3246</strong>
+                    <p>예금주: P앤I PUNCH</p>
+                    <button class="copy-button" onclick="copyAccount('01097073246')">계좌 복사</button>
+                </div>
+
+                <div class="account-card">
+                    <span class="bank-name">신한은행</span>
+                    <strong>110-402-327-385</strong>
+                    <p>예금주: 함병철 (P앤I PUNCH )</p>
+                    <button class="copy-button" onclick="copyAccount('110402327385')">계좌 복사</button>
+                </div>
+
+                <div class="account-card">
+                    <span class="bank-name">농협은행</span>
+                    <strong>1000-425-1008-441</strong>
+                    <p>예금주: 함병철</p>
+                    <button class="copy-button" onclick="copyAccount('10004251008441')">계좌 복사</button>
+                </div>
+            </div>
+
+            <p style="margin-top: 40px; color: var(--light-text); font-size: 0.95em;">
+                후원해 주신 모든 분들께 진심으로 감사드립니다. 여러분의 응원은 저희 활동의 큰 힘이 됩니다! 🙏
+            </p>
+
+        </div>
+    </div>
+
+    <script>
+        function copyAccount(accountNumber) {
+            // 하이픈 제거하고 순수 숫자만 복사
+            const tempInput = document.createElement('input');
+            tempInput.value = accountNumber.replace(/-/g, '');
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('계좌번호가 복사되었습니다! (' + accountNumber + ')');
+        }
+    </script>
+
+    <footer>
+        <div class="footer-nav">
+             <a href="index.html">홈으로</a>
+        </div>
+        <p>밴드모집/회원모집 &bull; All rights reserved.</p>
+        <p style="font-size: 0.8em; color: var(--light-text);">
+            사업자 등록번호: 106-05-26400 |
+            <a href="privacy.html" style="color: var(--light-text); text-decoration: none; border-bottom: 1px dotted var(--light-text);">개인정보처리방침</a>
+        </p>
+    </footer>
+
+</body>
+</html>
