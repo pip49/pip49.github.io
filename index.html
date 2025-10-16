@@ -211,6 +211,12 @@
         footer a:hover {
             border-bottom-color: var(--primary-color);
         }
+        /* 👇 'My Desk' 링크 전용 스타일: Jua 폰트 적용 */
+        .my-desk-link {
+            font-family: 'Jua', sans-serif;
+            font-weight: 400; /* Jua 폰트는 보통 굵기를 사용 */
+        }
+
 
         /* 모바일 반응형 디자인 */
         @media (max-width: 768px) {
@@ -294,8 +300,8 @@
                 <a href="donate.html" style="color: #1976D2; border-bottom: 2px solid #1976D2; text-decoration: none; padding-bottom: 2px; margin-right: 25px;">
                     🔷 후원하기 🔷
                 </a>
-                <a href="http://125.251.58.88:49494/cgi-bin/shop.cgi" style="color: #FF9800; border-bottom: 2px solid #FF9800; text-decoration: none; padding-bottom: 2px;">
-                    🛒 미니샾 🛒
+                <a href="http://125.251.58.88:49494/cgi-bin/shop.cgi" class="my-desk-link" style="color: #FF9800; border-bottom: 2px solid #FF9800; text-decoration: none; padding-bottom: 2px;">
+                    My Desk
                 </a>
             </p>
             <p>밴드모집/회원모집 &bull; All rights reserved.</p>
