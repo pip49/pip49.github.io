@@ -281,7 +281,7 @@
                 </div>
 
                 <div class="guestbook-jua-badge-container">
-                    <a id="boardLink" href="http://125.251.58.94:49494/cgi-bin/board.cgi" class="guestbook-jua-badge">
+                    <a href="http://125.251.58.94:49494/cgi-bin/board.cgi" class="guestbook-jua-badge">
                         방명록/게시판
                     </a>
                 </div>
@@ -312,57 +312,5 @@
             </div>
     </footer>
 
-<script>
-    const link = document.getElementById('boardLink');
-    if (link) {
-        // 기본 URL을 저장하고 대체 URL을 정의합니다.
-        const baseURL = link.href.split('?')[0]; // 쿼리 스트링 제거
-        const altURL = baseURL + '?style=alt';
-        const LONG_PRESS_TIME = 500; // 0.5초 기준
-        let pressTimer = null;
-        let isLongPress = false;
-
-        // --- 1. PC: 더블 클릭 이벤트 처리 (대체 디자인으로 이동) ---
-        link.addEventListener('dblclick', function(event) {
-            event.preventDefault(); // 기본 링크 이동 방지
-            window.location.href = altURL;
-        });
-
-        // --- 2. 모바일: 길게 누르기 (Long Press) 이벤트 처리 (대체 디자인으로 이동) ---
-
-        // 터치 시작 시 타이머 설정
-        link.addEventListener('touchstart', function(event) {
-            // 이벤트를 하나만 처리하도록 preventDefault()를 사용
-            event.preventDefault();
-            isLongPress = false;
-
-            pressTimer = setTimeout(function() {
-                isLongPress = true; // 0.5초 이상 터치하면 롱 프레스로 간주
-                window.location.href = altURL;
-            }, LONG_PRESS_TIME);
-        });
-
-        // 터치 종료 시 타이머 취소 및 일반 클릭 처리
-        link.addEventListener('touchend', function(event) {
-            if (pressTimer) {
-                clearTimeout(pressTimer); // 0.5초 이내에 손을 떼면 롱 프레스 타이머 취소
-            }
-
-            // 롱 프레스가 아니었고 (isLongPress == false) 더블 클릭 방지 로직이 없다면
-            // 이는 일반적인 짧은 탭(클릭)으로 간주합니다.
-            if (!isLongPress) {
-                // 수동으로 기본 URL로 이동 처리 (touchstart에서 기본 동작을 막았으므로)
-                window.location.href = baseURL;
-            }
-            // 롱 프레스였으면 이미 altURL로 이동했으므로 아무 작업도 하지 않습니다.
-        });
-
-        // 클릭 이벤트 방지 (일부 브라우저에서 tap을 click으로 해석하는 것을 방지)
-        // 위 touchend에서 수동으로 이동을 처리하므로 click 이벤트는 막아줍니다.
-        link.addEventListener('click', function(event) {
-             event.preventDefault();
-        });
-    }
-</script>
 </body>
 </html>
