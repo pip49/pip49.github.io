@@ -30,10 +30,8 @@
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
-
-            /* 👇 수정된 부분: height: 100vh 대신 min-height: 100vh 사용 */
-            /* height를 min-height로 변경하여 콘텐츠가 길어질 때 높이가 늘어나도록 허용 */
-            min-height: 100vh;
+            /* 👇 푸터를 포함한 전체 페이지 레이아웃을 위한 Flexbox 설정 */
+            height: 100vh; /* 뷰포트 전체 높이를 사용 */
             display: flex;
             flex-direction: column;
         }
@@ -49,11 +47,12 @@
         header {
             background-color: var(--header-footer-bg);
             border-bottom: 1px solid #eee;
+            /* position: sticky;를 유지하여 스크롤 시에도 헤더가 상단에 고정되게 함 */
             position: sticky;
             top: 0;
             z-index: 1000;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            flex-shrink: 0;
+            flex-shrink: 0; /* 헤더는 줄어들지 않도록 고정 */
         }
         header .container {
             display: flex;
@@ -77,6 +76,7 @@
         nav ul li {
             margin-left: 30px;
         }
+        /* 👇 메뉴 링크가 다른 파일로 이동하도록 수정 */
         nav ul li a {
             text-decoration: none;
             color: var(--text-color);
@@ -94,9 +94,8 @@
         main {
             padding: 60px 0;
             /* min-height: 80vh; 삭제 */
-            flex-grow: 1;
-            /* 👇 수정된 부분: overflow-y: auto; 속성 제거 */
-            /* body의 높이가 유동적으로 변했으므로, main의 스크롤을 별도로 강제할 필요 없음 */
+            flex-grow: 1; /* 👇 남은 공간을 모두 차지하도록 설정 */
+            overflow-y: auto; /* 👇 콘텐츠가 길어지면 메인 영역 안에서만 스크롤이 발생 */
         }
         section {
             margin-bottom: 40px;
@@ -118,6 +117,9 @@
             margin-top: 0;
             margin-bottom: 25px;
         }
+        /* 참고: 원본 h2 대신 h4로 작성되어 있어 h4 스타일을 찾을 수 없으므로, h4의 기본 스타일이 적용됨. */
+        /* 만약 h4도 h2처럼 꾸미고 싶다면 h4에 대한 스타일을 추가해야 함. */
+
 
         /* 오디오 플레이어 스타일 */
         #audio-player audio {
