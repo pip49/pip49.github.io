@@ -11,8 +11,7 @@ tags: [오디오, 회로, 증폭기, 앰프]
 
 오디오 증폭기(Amplifier)는 마이크나 음악 플레이어 등에서 나오는 **매우 작은 전기적 오디오 신호**를 스피커를 구동할 수 있을 만큼 **충분히 큰 신호로 키워주는 역할**을 합니다. 이 과정을 **'증폭(Amplification)'**이라고 합니다. 
 
-[Image of Simple audio amplifier circuit diagram]
-
+![간단한 오디오 앰프 회로도](/assets/images/5.jpg)
 
 앰프는 크게 두 가지 핵심 기능을 수행합니다:
 
