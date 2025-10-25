@@ -4,8 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오디오 회로 작동 원리</title>
-    </head>
+    <title>오디오 회로 작동 원리 및 MP3</title>
+    <style>
+        /* 이미지와 오디오 플레이어의 기본 스타일을 인라인이 아닌 여기에 정의 */
+        .content-block {
+            margin: 30px 0;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
 <body>
     <h1>오디오 회로 소개</h1>
 
@@ -15,7 +32,16 @@
     </p>
 
     <h2>오디오 증폭 회로도</h2>
-    <img src="/images/5.jpg" alt="간단한 오디오 증폭 회로도" style="max-width: 100%; height: auto; display: block; margin: 20px auto;">
+    <img src="/assets/images/5.jpg" alt="간단한 오디오 증폭 회로도">
+
+    <div class="content-block">
+        <h2>🔊 오디오 예시</h2>
+        <p>회로를 통해 증폭될 수 있는 오디오 파일의 예시입니다. 재생 버튼을 눌러보세요.</p>
+        <audio controls>
+            <source src="/assets/audio/music.mp3" type="audio/mpeg">
+            브라우저가 오디오 재생을 지원하지 않습니다.
+        </audio>
+    </div>
 
     <h2>주요 작동 원리</h2>
     <ul>
