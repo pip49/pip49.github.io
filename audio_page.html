@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>실시간 오디오 스트림 - Elegance Solutions</title>
+    <title>실시간 스트림 - Elegance Solutions</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         body { font-family: sans-serif; background-color: #f0f0f0; text-align: center; padding-top: 50px; }
         .audio-box {
@@ -15,11 +16,10 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        audio { width: 100%; margin-top: 15px; }
 
-        /* 스트림 비디오 및 MJPEG 이미지 스타일 통합 */
+        /* 기존 디자인 및 크기 유지 */
         .stream-content {
-            display: none; /* 초기에 숨김 */
+            display: block; /* 항상 보이도록 설정 */
             margin: 0 auto 30px;
             width: 100px; /* 요청하신 100px 너비 */
             height: 120px; /* 요청하신 120px 높이 */
@@ -32,120 +32,49 @@
             background-color: #000;
         }
 
-        /* 이미지 및 스트림 토글 링크 컨테이너 */
-        .toggle-links {
-            display: flex;
-            justify-content: center; /* 가운데 정렬 */
-            gap: 20px; /* 링크 사이의 간격 */
-            margin-top: 10px;
-        }
-
-        /* 링크 스타일 */
-        .toggle-links span {
-            color: #A98054;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
         .audio-box h1 {
             margin-top: 0;
+            font-size: 1.5rem;
         }
 
+        .status-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="audio-box">
+        <video id="videoPlayer" class="stream-content" autoplay muted playsinline></video>
 
-        <img src="http://125.251.58.88:8090/test.mpjpeg"
-             alt="실시간 이미지 스트림"
-             class="stream-content"
-             id="mjpegImage">
-
-        <iframe id="srsStreamIframe"
-                class="stream-content"
-                style="border:none;"
-                title="SRS Live Stream"
-                allow="autoplay; fullscreen"
-                src="">
-        </iframe>
-
-        <h1>실시간 오디오 재생 중 🔊</h1>
-        <p>스트림 서버에서 직접 제공되는 페이지입니다. 보안 경고가 나타날 수 있습니다.</p>
-
-        <div class="toggle-links">
-            <span id="toggleImageLink">이미지 보기</span>
-            <span id="toggleStreamLink">스트림 보기</span>
-        </div>
-
-        <audio id="streamPlayer" controls preload="none"></audio>
+        <h1>실시간 스트림 재생 중 🎥</h1>
+        <p class="status-text">SRS 서버를 통한 실시간 전송 모드입니다.</p>
 
         <p><a href="https://pip49.github.io/index.html">메인 페이지로 돌아가기</a></p>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const audioPlayer = document.getElementById('streamPlayer');
-            const mjpegImage = document.getElementById('mjpegImage');
-            const srsStreamIframe = document.getElementById('srsStreamIframe');
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.getElementById('videoPlayer');
+            // 요청하신 SRS 스트림 URL
+            const srsStreamUrl = 'http://125.251.58.88:1935/live/my_stream2.m3u8';
 
-            const toggleImageLink = document.getElementById('toggleImageLink');
-            const toggleStreamLink = document.getElementById('toggleStreamLink');
-
-            const streamUrl = 'http://125.251.58.88:8090/test.wav';
-            // 🚨 이 URL을 실제 도커 SRS 스트림 URL로 변경해야 합니다.
-            // SRS는 일반적으로 RTMP/HLS/WebRTC를 제공하며, FLV는 브라우저에서 직접 재생하기 어렵습니다.
-            // 테스트를 위해 임시로 플레이어가 있는 페이지 URL을 넣어주세요.
-            const srsStreamUrl = 'http://125.251.58.88:1935/live/my_stream2.m3u8'; // ⚠️ 이 부분을 변경하세요!
-
-            // 1. 오디오 로드 및 재생 시도
-            audioPlayer.src = streamUrl;
-            audioPlayer.load();
-
-            audioPlayer.play().catch(error => {
-                // 자동 재생 실패 처리
-            });
-
-            // 모든 스트림 컨텐츠를 숨기는 함수 (다른 하나를 보이기 전에 호출)
-            function hideAllStreamContent() {
-                mjpegImage.style.display = 'none';
-                srsStreamIframe.style.display = 'none';
-                srsStreamIframe.src = ''; // iframe 소스 초기화 (스트림 중지)
-                toggleImageLink.textContent = '이미지 보기';
-                toggleStreamLink.textContent = '스트림 보기';
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(srsStreamUrl);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    video.play();
+                });
             }
-
-            // 2. '이미지 보기' 기능 구현
-            toggleImageLink.addEventListener('click', function() {
-                if (mjpegImage.style.display === 'none') {
-                    // 이미지가 숨겨져 있으면 보이게 함
-                    hideAllStreamContent(); // 다른 것을 먼저 숨김
-                    mjpegImage.style.display = 'block';
-                    toggleImageLink.textContent = '이미지 숨기기';
-                } else {
-                    // 이미지가 보이면 숨김
-                    mjpegImage.style.display = 'none';
-                    toggleImageLink.textContent = '이미지 보기';
-                }
-            });
-
-            // 3. '스트림 보기' 기능 구현 (요청하신 부분)
-            toggleStreamLink.addEventListener('click', function() {
-                if (srsStreamIframe.style.display === 'none') {
-                    // 스트림이 숨겨져 있으면 보이게 함
-                    hideAllStreamContent(); // 다른 것을 먼저 숨김
-                    srsStreamIframe.style.display = 'block';
-                    // iframe에 스트림 URL을 로드하여 재생 시작
-                    // FLV, RTMP 등은 브라우저에서 직접 재생이 안될 수 있으므로,
-                    // SRS의 HLS나 WebRTC를 사용하거나, 해당 스트림을 재생하는 플레이어 페이지의 URL을 여기에 넣어야 합니다.
-                    srsStreamIframe.src = srsStreamUrl;
-                    toggleStreamLink.textContent = '스트림 숨기기';
-                } else {
-                    // 스트림이 보이면 숨김
-                    srsStreamIframe.style.display = 'none';
-                    srsStreamIframe.src = ''; // iframe 소스 초기화 (스트림 중지)
-                    toggleStreamLink.textContent = '스트림 보기';
-                }
-            });
+            // Safari 등 HLS를 자체 지원하는 브라우저 대응
+            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = srsStreamUrl;
+                video.addEventListener('loadedmetadata', () => {
+                    video.play();
+                });
+            }
         });
     </script>
 </body>
