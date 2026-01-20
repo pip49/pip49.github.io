@@ -1,80 +1,68 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>실시간 스트림 - Elegance Solutions</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>실시간 오디오 스트림 - Elegance Solutions</title>
     <style>
-        body { font-family: sans-serif; background-color: #f0f0f0; text-align: center; padding-top: 50px; }
+        body {
+            font-family: sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding-top: 50px;
+        }
         .audio-box {
             max-width: 500px;
             margin: 0 auto;
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
-        /* 기존 디자인 및 크기 유지 */
-        .stream-content {
-            display: block; /* 항상 보이도록 설정 */
-            margin: 0 auto 30px;
-            width: 100px; /* 요청하신 100px 너비 */
-            height: 120px; /* 요청하신 120px 높이 */
-            object-fit: cover;
-            border: 5px solid #333;
-            border-radius: 10px;
-            box-shadow:
-                inset 0 0 8px rgba(0, 0, 0, 0.6),
-                inset 0 0 0 3px #555;
-            background-color: #000;
+        audio {
+            width: 100%;
+            margin-top: 25px;
+            margin-bottom: 25px;
         }
-
         .audio-box h1 {
             margin-top: 0;
-            font-size: 1.5rem;
+            color: #333;
         }
-
-        .status-text {
+        .audio-box p {
             color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #A98054;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="audio-box">
-        <video id="videoPlayer" class="stream-content" autoplay muted playsinline></video>
+        <h1>실시간 오디오 재생 중 🔊</h1>
+        <p>스트림 서버에서 제공되는 .wav 오디오를 재생합니다.</p>
 
-        <h1>실시간 스트림 재생 중 🎥</h1>
-        <p class="status-text">SRS 서버를 통한 실시간 전송 모드입니다.</p>
+        <audio id="streamPlayer" controls preload="auto"></audio>
 
-        <p><a href="https://pip49.github.io/index.html">메인 페이지로 돌아가기</a></p>
+        <p><a href="https://pip49.github.io/index.html" class="back-link">메인 페이지로 돌아가기</a></p>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const video = document.getElementById('videoPlayer');
-            // 요청하신 SRS 스트림 URL
-            const srsStreamUrl = 'http://125.251.58.88:1935/live/my_stream2.m3u8';
+            const audioPlayer = document.getElementById('streamPlayer');
+            const streamUrl = 'http://125.251.58.88:8090/test.wav';
 
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(srsStreamUrl);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    video.play();
-                });
-            }
-            // Safari 등 HLS를 자체 지원하는 브라우저 대응
-            else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = srsStreamUrl;
-                video.addEventListener('loadedmetadata', () => {
-                    video.play();
-                });
-            }
+            // 오디오 소스 설정 및 로드
+            audioPlayer.src = streamUrl;
+
+            // 자동 재생 시도 (브라우저 정책에 따라 차단될 수 있음)
+            audioPlayer.play().catch(error => {
+                console.log("자동 재생이 차단되었습니다. 사용자가 직접 재생 버튼을 눌러야 합니다.");
+            });
         });
     </script>
 </body>
